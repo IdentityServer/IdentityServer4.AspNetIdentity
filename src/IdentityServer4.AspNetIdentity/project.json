@@ -1,8 +1,19 @@
 ﻿{
   "version": "1.0.0-rc1-*",
 
+  "authors": [ "Brock Allen", "Dominick Baier" ],
+  "description": "ASP.NET Core Identity Integration for IdentityServer4",
+
+  "packOptions": {
+    "tags": [ "OAuth2", "OAuth 2.0", "OpenID Connect", "Security", "Identity", "IdentityServer", "ASP.NET Identity" ],
+    "projectUrl": "https://github.com/IdentityServer/IdentityServer4.AspNetIdentity",
+    "licenseUrl": "https://github.com/IdentityServer/IdentityServer4.AspNetIdentity/LICENSE",
+    "iconUrl": "https://identityserver.github.io/Documentation/assets/images/icons/IDserver_icon128.jpg"
+  },
+
   "dependencies": {
-    "IdentityServer4": "1.0.0-rc1"
+    "IdentityServer4": "1.0.0-rc1",
+    "Microsoft.AspNetCore.Identity": "1.0.0"
   },
 
   "frameworks": {
