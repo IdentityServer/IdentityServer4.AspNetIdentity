@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{932FA9D0-7FB4-4047-8FFD-B74907B5FA15}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E136E685-12DD-4782-945A-5E817BA176F1}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "AspNetIdentity", "src\AspNetIdentity\AspNetIdentity.xproj", "{A2CDBE15-5898-4A04-94DC-133EE03A78B3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2CDBE15-5898-4A04-94DC-133EE03A78B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2CDBE15-5898-4A04-94DC-133EE03A78B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2CDBE15-5898-4A04-94DC-133EE03A78B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2CDBE15-5898-4A04-94DC-133EE03A78B3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A2CDBE15-5898-4A04-94DC-133EE03A78B3} = {932FA9D0-7FB4-4047-8FFD-B74907B5FA15}
+	EndGlobalSection
+EndGlobal

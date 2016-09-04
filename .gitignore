@@ -10,6 +10,10 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+# Cake Build Related
+tools/Cake/
+tools/packages.config.md5sum
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -17,6 +21,7 @@
 [Rr]eleases/
 x64/
 x86/
+build/
 bld/
 [Bb]in/
 [Oo]bj/
@@ -24,6 +29,7 @@ bld/
 
 # Visual Studio 2015 cache/options directory
 .vs/
+nuget.exe
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
@@ -195,7 +201,7 @@ orleans.codegen.cs
 
 # Since there are multiple workflows, uncomment next line to ignore bower_components
 # (https://github.com/github/gitignore/pull/1529#issuecomment-104372622)
-#bower_components/
+bower_components/
 
 # RIA/Silverlight projects
 Generated_Code/
