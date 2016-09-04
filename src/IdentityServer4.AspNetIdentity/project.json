@@ -1,0 +1,12 @@
+﻿{
+  "version": "1.0.0-rc1-*",
+
+  "dependencies": {
+    "IdentityServer4": "1.0.0-rc1"
+  },
+
+  "frameworks": {
+    "netstandard1.4": {},
+    "net452": {}
+  }
+}
