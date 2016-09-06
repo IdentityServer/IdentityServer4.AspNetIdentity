@@ -12,7 +12,7 @@ This repos contains extensions for IdentityServer to easily integate with ASP.NE
 
 ```csharp
 // Adds IdentityServer
-services.AddIdentityServerQuickstart()
+services.AddIdentityServer()
     .AddInMemoryScopes(Config.GetScopes())
     .AddInMemoryClients(Config.GetClients())
     .AddAspNetIdentity<ApplicationUser>();
