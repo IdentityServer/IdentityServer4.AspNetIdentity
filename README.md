@@ -17,3 +17,5 @@ services.AddIdentityServer()
     .AddInMemoryClients(Config.GetClients())
     .AddAspNetIdentity<ApplicationUser>();
 ```
+
+You can find a detailed walk-through for ASP.NET Core Identity integration [here](https://identityserver4.readthedocs.io/en/dev/quickstarts/6_aspnet_identity.html).
