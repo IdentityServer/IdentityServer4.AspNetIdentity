@@ -7,6 +7,7 @@ using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Configuration;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -36,6 +37,8 @@ namespace Microsoft.Extensions.DependencyInjection
 
             builder.AddResourceOwnerValidator<ResourceOwnerPasswordValidator<TUser>>();
             builder.Services.AddTransient<IProfileService, ProfileService<TUser>>();
+
+            builder.Services.AddTransient<ISecurityStampValidator, IdentityServer4.AspNetIdentity.SecurityStampValidator<TUser>>();
 
             return builder;
         }
