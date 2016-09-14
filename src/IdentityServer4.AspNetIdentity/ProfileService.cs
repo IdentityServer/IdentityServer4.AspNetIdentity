@@ -27,17 +27,9 @@ namespace IdentityServer4.AspNetIdentity
         public async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             var sub = context.Subject.GetSubjectId();
-
             var user = await _userManager.FindByIdAsync(sub);
             var principal = await _claimsFactory.CreateAsync(user);
-
-            var claims = principal.Claims.ToList();
-            if (!context.AllClaimsRequested)
-            {
-                claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
-            }
-
-            context.IssuedClaims = claims;
+            context.AddFilteredClaims(principal.Claims);
         }
 
         public async Task IsActiveAsync(IsActiveContext context)
