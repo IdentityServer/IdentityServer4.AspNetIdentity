@@ -1,50 +1,39 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+  margin-top: 65px;
 }
-
-/* Wrapping element */
-/* Set some basic padding to keep content from hitting the edges */
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
+.navbar-header {
+  position: relative;
+  top: -4px;
 }
-
-/* Set widths on the form inputs since otherwise they're 100% wide */
-input,
-select,
-textarea {
-    max-width: 280px;
+.navbar-brand > .icon-banner {
+  position: relative;
+  top: -2px;
+  display: inline;
 }
-
-/* Carousel */
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+.icon {
+  position: relative;
+  top: -10px;
 }
-
-/* buttons and links extension to use brackets: [ click me ] */
-.btn-bracketed::before {
-    display:inline-block;
-    content: "[";
-    padding-right: 0.5em;
+.page-consent .client-logo {
+  float: left;
 }
-.btn-bracketed::after {
-    display:inline-block;
-    content: "]";
-    padding-left: 0.5em;
+.page-consent .client-logo img {
+  width: 80px;
+  height: 80px;
 }
-
-/* Make .svg files in the carousel display properly in older browsers */
-.carousel-inner .item img[src$=".svg"]
-{
-    width: 100%;
+.page-consent .consent-buttons {
+  margin-top: 25px;
 }
-
-/* Hide/rearrange for smaller screens */
-@media screen and (max-width: 767px) {
-  /* Hide captions */
-  .carousel-caption {
-    display: none
-  }
+.page-consent .consent-form .consent-scopecheck {
+  display: inline-block;
+  margin-right: 5px;
+}
+.page-consent .consent-form .consent-description {
+  margin-left: 25px;
+}
+.page-consent .consent-form .consent-description label {
+  font-weight: normal;
+}
+.page-consent .consent-form .consent-remember {
+  padding-left: 16px;
 }

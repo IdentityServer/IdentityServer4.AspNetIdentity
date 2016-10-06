@@ -1,4 +1,5 @@
-﻿using IdentityServer4.Models;
+﻿using IdentityServer4;
+using IdentityServer4.Models;
 using IdentityServer4.Services.InMemory;
 using System;
 using System.Collections.Generic;
@@ -16,14 +17,33 @@ namespace Host
             return new List<Scope>
             {
                 StandardScopes.OpenId,
-                StandardScopes.Profile,
+                StandardScopes.ProfileAlwaysInclude,
+                StandardScopes.EmailAlwaysInclude,
                 StandardScopes.OfflineAccess,
+                StandardScopes.RolesAlwaysInclude,
 
                 new Scope
                 {
                     Name = "api1",
-                    DisplayName = "API1 access",
-                    Description = "My API"
+                    DisplayName = "API 1",
+                    Description = "API 1 features and data",
+                    Type = ScopeType.Resource,
+
+                    ScopeSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+                    Claims =
+                    {
+                        new ScopeClaim("role")
+                    }
+                },
+                new Scope
+                {
+                    Name = "api2",
+                    DisplayName = "API 2",
+                    Description = "API 2 features and data, which are better than API 1",
+                    Type = ScopeType.Resource
                 }
             };
         }
@@ -31,71 +51,269 @@ namespace Host
         // clients want to access resources (aka scopes)
         public static IEnumerable<Client> GetClients()
         {
-            // client credentials client
             return new List<Client>
             {
+                ///////////////////////////////////////////
+                // Console Client Credentials Flow Sample
+                //////////////////////////////////////////
                 new Client
                 {
                     ClientId = "client",
-                    AllowedGrantTypes = GrantTypes.ClientCredentials,
-
-                    ClientSecrets = new List<Secret>
+                    ClientSecrets =
                     {
                         new Secret("secret".Sha256())
                     },
-                    AllowedScopes = new List<string>
-                    {
-                        "api1"
-                    }
+
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedScopes = { "api1", "api2" },
                 },
 
-                // resource owner password grant client
+                ///////////////////////////////////////////
+                // Console Client Credentials Flow with client JWT assertion
+                //////////////////////////////////////////
                 new Client
                 {
-                    ClientId = "ro.client",
+                    ClientId = "client.jwt",
+                    ClientSecrets =
+                    {
+                        new Secret
+                        {
+                            Type = IdentityServerConstants.SecretTypes.X509CertificateBase64,
+                            Value = "MIIDATCCAe2gAwIBAgIQoHUYAquk9rBJcq8W+F0FAzAJBgUrDgMCHQUAMBIxEDAOBgNVBAMTB0RldlJvb3QwHhcNMTAwMTIwMjMwMDAwWhcNMjAwMTIwMjMwMDAwWjARMQ8wDQYDVQQDEwZDbGllbnQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDSaY4x1eXqjHF1iXQcF3pbFrIbmNw19w/IdOQxbavmuPbhY7jX0IORu/GQiHjmhqWt8F4G7KGLhXLC1j7rXdDmxXRyVJBZBTEaSYukuX7zGeUXscdpgODLQVay/0hUGz54aDZPAhtBHaYbog+yH10sCXgV1Mxtzx3dGelA6pPwiAmXwFxjJ1HGsS/hdbt+vgXhdlzud3ZSfyI/TJAnFeKxsmbJUyqMfoBl1zFKG4MOvgHhBjekp+r8gYNGknMYu9JDFr1ue0wylaw9UwG8ZXAkYmYbn2wN/CpJl3gJgX42/9g87uLvtVAmz5L+rZQTlS1ibv54ScR2lcRpGQiQav/LAgMBAAGjXDBaMBMGA1UdJQQMMAoGCCsGAQUFBwMCMEMGA1UdAQQ8MDqAENIWANpX5DZ3bX3WvoDfy0GhFDASMRAwDgYDVQQDEwdEZXZSb290ghAsWTt7E82DjU1E1p427Qj2MAkGBSsOAwIdBQADggEBADLje0qbqGVPaZHINLn+WSM2czZk0b5NG80btp7arjgDYoWBIe2TSOkkApTRhLPfmZTsaiI3Ro/64q+Dk3z3Kt7w+grHqu5nYhsn7xQFAQUf3y2KcJnRdIEk0jrLM4vgIzYdXsoC6YO+9QnlkNqcN36Y8IpSVSTda6gRKvGXiAhu42e2Qey/WNMFOL+YzMXGt/nDHL/qRKsuXBOarIb++43DV3YnxGTx22llhOnPpuZ9/gnNY7KLjODaiEciKhaKqt/b57mTEz4jTF4kIg6BP03MUfDXeVlM1Qf1jB43G2QQ19n5lUiqTpmQkcfLfyci2uBZ8BkOhXr3Vk9HIk/xBXQ="
+                        }
+                    },
+
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowedScopes = { "api1", "api2" }
+                },
+
+                ///////////////////////////////////////////
+                // Custom Grant Sample
+                //////////////////////////////////////////
+                new Client
+                {
+                    ClientId = "client.custom",
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    AllowedGrantTypes = GrantTypes.List("custom"),
+                    AllowedScopes = { "api1", "api2" }
+                },
+
+                ///////////////////////////////////////////
+                // Console Resource Owner Flow Sample
+                //////////////////////////////////////////
+                new Client
+                {
+                    ClientId = "roclient",
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
-                    ClientSecrets = new List<Secret>
+                    AllowedScopes =
                     {
-                        new Secret("secret".Sha256())
-                    },
-                    AllowedScopes = new List<string>
-                    {
-                        "api1"
+                        StandardScopes.OpenId.Name,
+                        StandardScopes.Email.Name,
+                        StandardScopes.OfflineAccess.Name,
+
+                        "api1", "api2"
                     }
                 },
 
-                // OpenID Connect hybrid flow and client credentials client (MVC)
+                ///////////////////////////////////////////
+                // Console Public Resource Owner Flow Sample
+                //////////////////////////////////////////
                 new Client
                 {
-                    ClientId = "mvc",
-                    ClientName = "MVC Client",
-                    AllowedGrantTypes = GrantTypes.HybridAndClientCredentials,
+                    ClientId = "roclient.public",
+                    RequireClientSecret = false,
 
-                    RequireConsent = true,
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
-                    ClientSecrets = new List<Secret>
+                    AllowedScopes =
                     {
-                        new Secret("secret".Sha256())
-                    },
+                        StandardScopes.OpenId.Name,
+                        StandardScopes.Email.Name,
+                        StandardScopes.OfflineAccess.Name,
 
-                    RedirectUris = new List<string>
-                    {
-                        "http://localhost:5002/signin-oidc"
-                    },
-                    PostLogoutRedirectUris = new List<string>
-                    {
-                        "http://localhost:5002"
-                    },
+                        "api1", "api2"
+                    }
+                },
 
-                    AllowedScopes = new List<string>
+                ///////////////////////////////////////////
+                // Console Hybrid with PKCE Sample
+                //////////////////////////////////////////
+                new Client
+                {
+                    ClientId = "console.hybrid.pkce",
+                    ClientName = "Console Hybrid with PKCE Sample",
+                    RequireClientSecret = false,
+
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    RequirePkce = true,
+
+                    RedirectUris = { "http://127.0.0.1:7890/" },
+
+                    AllowedScopes =
                     {
                         StandardScopes.OpenId.Name,
                         StandardScopes.Profile.Name,
+                        StandardScopes.Email.Name,
+                        StandardScopes.Roles.Name,
                         StandardScopes.OfflineAccess.Name,
-                        "api1"
-                    }
-                }
+
+                        "api1", "api2",
+                    },
+                },
+
+                ///////////////////////////////////////////
+                // Introspection Client Sample
+                //////////////////////////////////////////
+                new Client
+                {
+                    ClientId = "roclient.reference",
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AllowedScopes = { "api1", "api2" },
+
+                    AccessTokenType = AccessTokenType.Reference
+                },
+
+                ///////////////////////////////////////////
+                // MVC Implicit Flow Samples
+                //////////////////////////////////////////
+                new Client
+                {
+                    ClientId = "mvc.implicit",
+                    ClientName = "MVC Implicit",
+                    ClientUri = "http://identityserver.io",
+
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RedirectUris =  { "http://localhost:44077/signin-oidc" },
+                    LogoutUri = "http://localhost:44077/signout-oidc",
+                    PostLogoutRedirectUris = { "http://localhost:44077/" },
+
+                    AllowedScopes =
+                    {
+                        StandardScopes.OpenId.Name,
+                        StandardScopes.Profile.Name,
+                        StandardScopes.Email.Name,
+                        StandardScopes.Roles.Name,
+
+                        "api1", "api2"
+                    },
+                },
+
+                ///////////////////////////////////////////
+                // MVC Manual Implicit Flow Sample
+                //////////////////////////////////////////
+                new Client
+                {
+                    ClientId = "mvc.manual",
+                    ClientName = "MVC Manual",
+                    ClientUri = "http://identityserver.io",
+
+                    AllowedGrantTypes = GrantTypes.Implicit,
+
+                    RedirectUris = { "http://localhost:44077/home/callback" },
+                    LogoutUri = "http://localhost:44077/signout-oidc",
+                    PostLogoutRedirectUris = { "http://localhost:44077/" },
+
+                    AllowedScopes = { StandardScopes.OpenId.Name },
+                },
+
+                ///////////////////////////////////////////
+                // MVC Hybrid Flow Samples
+                //////////////////////////////////////////
+                new Client
+                {
+                    ClientId = "mvc.hybrid",
+                    ClientName = "MVC Hybrid",
+                    ClientUri = "http://identityserver.io",
+
+                    ClientSecrets =
+                    {
+                        new Secret("secret".Sha256())
+                    },
+
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowAccessTokensViaBrowser = false,
+
+                    RedirectUris = { "http://localhost:21402/signin-oidc" },
+                    LogoutUri = "http://localhost:21402/signout-oidc",
+                    PostLogoutRedirectUris = { "http://localhost:21402/" },
+
+                    AllowedScopes =
+                    {
+                        StandardScopes.OpenId.Name,
+                        StandardScopes.Profile.Name,
+                        StandardScopes.Email.Name,
+                        StandardScopes.Roles.Name,
+                        StandardScopes.OfflineAccess.Name,
+
+                        "api1", "api2",
+                    },
+                },
+
+                ///////////////////////////////////////////
+                // JS OAuth 2.0 Sample
+                //////////////////////////////////////////
+                new Client
+                {
+                    ClientId = "js_oauth",
+                    ClientName = "JavaScript OAuth 2.0 Client",
+                    ClientUri = "http://identityserver.io",
+
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+
+                    RedirectUris = { "http://localhost:28895/index.html" },
+                    AllowedScopes = { "api1", "api2" },
+                },
+                
+                ///////////////////////////////////////////
+                // JS OIDC Sample
+                //////////////////////////////////////////
+                new Client
+                {
+                    ClientId = "js_oidc",
+                    ClientName = "JavaScript OIDC Client",
+                    ClientUri = "http://identityserver.io",
+
+                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowAccessTokensViaBrowser = true,
+                    RequireClientSecret = false,
+                    AccessTokenType = AccessTokenType.Reference,
+
+                    RedirectUris =
+                    {
+                        "http://localhost:7017/index.html",
+                        "http://localhost:7017/silent_renew.html",
+                    },
+
+                    PostLogoutRedirectUris = { "http://localhost:7017/index.html" },
+                    AllowedCorsOrigins = { "http://localhost:7017" },
+
+                    AllowedScopes =
+                    {
+                        StandardScopes.OpenId.Name,
+                        StandardScopes.Profile.Name,
+                        StandardScopes.Email.Name,
+                        StandardScopes.Roles.Name,
+                        "api1", "api2"
+                    },
+                },
             };
         }
     }

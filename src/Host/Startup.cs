@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using Host.Data;
 using Host.Models;
 using Host.Services;
+using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace Host
 {
@@ -43,13 +45,10 @@ namespace Host
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-            {
-                options.SecurityStampValidationInterval = TimeSpan.FromSeconds(30);
-            })
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders()
-            .AddIdentityServerUserClaimsPrincipalFactory();
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders()
+                .AddIdentityServerUserClaimsPrincipalFactory();
 
             services.AddMvc();
 
@@ -66,8 +65,18 @@ namespace Host
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.File(@"c:\logs\idsvr_aspid.txt")
+                .CreateLogger();
+
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            loggerFactory.WithFilter(new FilterLoggerSettings {
+                { "Host", LogLevel.Information },
+                { "IdentityServer4", LogLevel.Debug },
+                { "Microsoft", LogLevel.Warning }
+            }).AddSerilog(Log.Logger);
 
             if (env.IsDevelopment())
             {
@@ -86,6 +95,14 @@ namespace Host
             app.UseIdentityServer();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
+            var externalCookieScheme = app.ApplicationServices.GetRequiredService<IOptions<IdentityOptions>>().Value.Cookies.ExternalCookieAuthenticationScheme;
+            app.UseGoogleAuthentication(new GoogleOptions
+            {
+                AuthenticationScheme = "Google",
+                SignInScheme = externalCookieScheme,
+                ClientId = "998042782978-s07498t8i8jas7npj4crve1skpromf37.apps.googleusercontent.com",
+                ClientSecret = "HsnwJri_53zn7VcO1Fm7THBb",
+            });
 
             app.UseMvc(routes =>
             {
