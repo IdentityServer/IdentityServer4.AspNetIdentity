@@ -36,7 +36,7 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             builder.AddResourceOwnerValidator<ResourceOwnerPasswordValidator<TUser>>();
-            builder.Services.AddTransient<IProfileService, ProfileService<TUser>>();
+            builder.AddProfileService<ProfileService<TUser>>();
 
             builder.Services.AddTransient<ISecurityStampValidator, IdentityServer4.AspNetIdentity.SecurityStampValidator<TUser>>();
 
