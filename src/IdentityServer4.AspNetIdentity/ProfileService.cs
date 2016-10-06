@@ -24,7 +24,7 @@ namespace IdentityServer4.AspNetIdentity
             _claimsFactory = claimsFactory;
         }
 
-        public async Task GetProfileDataAsync(ProfileDataRequestContext context)
+        public virtual async Task GetProfileDataAsync(ProfileDataRequestContext context)
         {
             var sub = context.Subject.GetSubjectId();
             var user = await _userManager.FindByIdAsync(sub);
@@ -32,7 +32,7 @@ namespace IdentityServer4.AspNetIdentity
             context.AddFilteredClaims(principal.Claims);
         }
 
-        public async Task IsActiveAsync(IsActiveContext context)
+        public virtual async Task IsActiveAsync(IsActiveContext context)
         {
             var sub = context.Subject.GetSubjectId();
             var user = await _userManager.FindByIdAsync(sub);

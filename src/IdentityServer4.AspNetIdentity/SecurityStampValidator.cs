@@ -27,7 +27,7 @@ namespace IdentityServer4.AspNetIdentity
             _signInManager = signInManager;
         }
 
-        public async Task ValidateAsync(CookieValidatePrincipalContext context)
+        public virtual async Task ValidateAsync(CookieValidatePrincipalContext context)
         {
             var currentUtc = DateTimeOffset.UtcNow;
             if (context.Options != null && context.Options.SystemClock != null)

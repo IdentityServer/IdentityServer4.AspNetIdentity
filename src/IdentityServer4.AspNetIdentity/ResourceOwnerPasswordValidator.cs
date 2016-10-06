@@ -23,7 +23,7 @@ namespace IdentityServer4.AspNetIdentity
             _signInManager = signInManager;
         }
 
-        public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
+        public virtual async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
             var user = await _userManager.FindByNameAsync(context.UserName);
             if (user != null)
