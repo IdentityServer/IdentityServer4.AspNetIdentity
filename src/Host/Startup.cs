@@ -43,12 +43,13 @@ namespace Host
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>(options=>
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.SecurityStampValidationInterval = TimeSpan.FromSeconds(30);
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddIdentityServerUserClaimsPrincipalFactory();
 
             services.AddMvc();
 

@@ -5,7 +5,6 @@
 using IdentityModel;
 using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Configuration;
-using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 
