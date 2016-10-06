@@ -12,7 +12,7 @@
   },
 
   "dependencies": {
-    "IdentityServer4": "1.0.0-rc1-update2",
+    "IdentityServer4": "1.0.0-rc2",
     "Microsoft.AspNetCore.Identity": "1.0.0"
   },
 

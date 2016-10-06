@@ -5,6 +5,7 @@
 <h1>Home</h1>
 @if (User.Identity.IsAuthenticated)
 {
+    <h1>Welcome back @User.Identity.Name</h1>
     <h2>User Claims</h2>
     <dl>
         @foreach (var claim in User.Claims)
