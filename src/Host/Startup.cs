@@ -14,6 +14,7 @@ using Host.Models;
 using Host.Services;
 using Microsoft.Extensions.Options;
 using Serilog;
+using Host.Configuration;
 
 namespace Host
 {
@@ -57,8 +58,8 @@ namespace Host
             services.AddTransient<ISmsSender, AuthMessageSender>();
 
             services.AddDeveloperIdentityServer()
-               .AddInMemoryScopes(Config.GetScopes())
-               .AddInMemoryClients(Config.GetClients())
+               .AddInMemoryScopes(Scopes.Get())
+               .AddInMemoryClients(Clients.Get())
                .AddAspNetIdentity<ApplicationUser>();
         }
 

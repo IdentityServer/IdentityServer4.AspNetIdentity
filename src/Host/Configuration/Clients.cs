@@ -1,55 +1,16 @@
-﻿using IdentityServer4;
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+
+using IdentityServer4;
 using IdentityServer4.Models;
-using IdentityServer4.Services.InMemory;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
-namespace Host
+namespace Host.Configuration
 {
-    public class Config
+    public class Clients
     {
-        // scopes define the resources in your system
-        public static IEnumerable<Scope> GetScopes()
-        {
-            return new List<Scope>
-            {
-                StandardScopes.OpenId,
-                StandardScopes.ProfileAlwaysInclude,
-                StandardScopes.EmailAlwaysInclude,
-                StandardScopes.OfflineAccess,
-                StandardScopes.RolesAlwaysInclude,
-
-                new Scope
-                {
-                    Name = "api1",
-                    DisplayName = "API 1",
-                    Description = "API 1 features and data",
-                    Type = ScopeType.Resource,
-
-                    ScopeSecrets =
-                    {
-                        new Secret("secret".Sha256())
-                    },
-                    Claims =
-                    {
-                        new ScopeClaim("role")
-                    }
-                },
-                new Scope
-                {
-                    Name = "api2",
-                    DisplayName = "API 2",
-                    Description = "API 2 features and data, which are better than API 1",
-                    Type = ScopeType.Resource
-                }
-            };
-        }
-
-        // clients want to access resources (aka scopes)
-        public static IEnumerable<Client> GetClients()
+        public static IEnumerable<Client> Get()
         {
             return new List<Client>
             {
@@ -93,7 +54,7 @@ namespace Host
                 new Client
                 {
                     ClientId = "client.custom",
-                    ClientSecrets =
+                    ClientSecrets = 
                     {
                         new Secret("secret".Sha256())
                     },
@@ -108,14 +69,14 @@ namespace Host
                 new Client
                 {
                     ClientId = "roclient",
-                    ClientSecrets =
+                    ClientSecrets = 
                     {
                         new Secret("secret".Sha256())
                     },
 
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
-                    AllowedScopes =
+                    AllowedScopes = 
                     {
                         StandardScopes.OpenId.Name,
                         StandardScopes.Email.Name,
@@ -135,7 +96,7 @@ namespace Host
 
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
 
-                    AllowedScopes =
+                    AllowedScopes = 
                     {
                         StandardScopes.OpenId.Name,
                         StandardScopes.Email.Name,
@@ -177,7 +138,7 @@ namespace Host
                 new Client
                 {
                     ClientId = "roclient.reference",
-                    ClientSecrets =
+                    ClientSecrets = 
                     {
                         new Secret("secret".Sha256())
                     },
@@ -242,11 +203,11 @@ namespace Host
                     ClientName = "MVC Hybrid",
                     ClientUri = "http://identityserver.io",
 
-                    ClientSecrets =
+                    ClientSecrets = 
                     {
                         new Secret("secret".Sha256())
                     },
-
+                    
                     AllowedGrantTypes = GrantTypes.Hybrid,
                     AllowAccessTokensViaBrowser = false,
 
@@ -254,7 +215,7 @@ namespace Host
                     LogoutUri = "http://localhost:21402/signout-oidc",
                     PostLogoutRedirectUris = { "http://localhost:21402/" },
 
-                    AllowedScopes =
+                    AllowedScopes = 
                     {
                         StandardScopes.OpenId.Name,
                         StandardScopes.Profile.Name,
@@ -296,7 +257,7 @@ namespace Host
                     RequireClientSecret = false,
                     AccessTokenType = AccessTokenType.Reference,
 
-                    RedirectUris =
+                    RedirectUris = 
                     {
                         "http://localhost:7017/index.html",
                         "http://localhost:7017/silent_renew.html",
