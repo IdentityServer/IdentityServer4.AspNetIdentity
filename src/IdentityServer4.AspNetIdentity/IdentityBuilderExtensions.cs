@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var classType = typeof(UserClaimsFactory<,>);
             classType = classType.MakeGenericType(builder.UserType, builder.RoleType);
 
-            builder.Services.AddTransient(interfaceType, classType);
+            builder.Services.AddScoped(interfaceType, classType);
 
             return builder;
         }
