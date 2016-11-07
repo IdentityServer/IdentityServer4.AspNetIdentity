@@ -15,6 +15,9 @@ using IdentityServer4.Quickstart.UI.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using IdentityServer4.Models;
+using IdentityModel;
+using IdentityServer4;
+using Microsoft.AspNetCore.Http.Authentication;
 
 namespace Host.Controllers
 {
@@ -161,13 +164,21 @@ namespace Host.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Logout(string logoutId)
         {
-            var context = await _interaction.GetLogoutContextAsync(logoutId);
-            if (context?.IsAuthenticatedLogout == true)
+            if (User.Identity.IsAuthenticated == false)
             {
-                // if the logout request is authenticated, it's safe to automatically sign-out
+                // if the user is not authenticated, then just show logged out page
                 return await Logout(new LogoutViewModel { LogoutId = logoutId });
             }
 
+            var context = await _interaction.GetLogoutContextAsync(logoutId);
+            if (context?.ShowSignoutPrompt == false)
+            {
+                // it's safe to automatically sign-out
+                return await Logout(new LogoutViewModel { LogoutId = logoutId });
+            }
+
+            // show the logout prompt. this prevents attacks where the user
+            // is automatically signed out by another malicious web page.
             var vm = new LogoutViewModel
             {
                 LogoutId = logoutId
@@ -184,6 +195,28 @@ namespace Host.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Logout(LogoutViewModel model)
         {
+            var idp = User?.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
+            if (idp != null && idp != IdentityServerConstants.LocalIdentityProvider)
+            {
+                if (model.LogoutId == null)
+                {
+                    // if there's no current logout context, we need to create one
+                    // this captures necessary info from the current logged in user
+                    // before we signout and redirect away to the external IdP for signout
+                    model.LogoutId = await _interaction.CreateLogoutContextAsync();
+                }
+
+                string url = "/Account/Logout?logoutId=" + model.LogoutId;
+                try
+                {
+                    // hack: try/catch to handle social providers that throw
+                    await HttpContext.Authentication.SignOutAsync(idp, new AuthenticationProperties { RedirectUri = url });
+                }
+                catch(NotSupportedException)
+                {
+                }
+            }
+
             // delete authentication cookie
             await _signInManager.SignOutAsync();
 
