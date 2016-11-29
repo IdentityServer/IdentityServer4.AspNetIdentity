@@ -60,9 +60,10 @@ namespace Host
             services.AddIdentityServer()
                 .AddTemporarySigningCredential()
                 .AddInMemoryPersistedGrants()
-               .AddInMemoryScopes(Scopes.Get())
-               .AddInMemoryClients(Clients.Get())
-               .AddAspNetIdentity<ApplicationUser>();
+                .AddInMemoryIdentityResources(Resources.GetIdentityResources())
+                .AddInMemoryApiResources(Resources.GetApiResources())
+                .AddInMemoryClients(Clients.Get())
+                .AddAspNetIdentity<ApplicationUser>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
