@@ -13,7 +13,7 @@
 
   "dependencies": {
     "IdentityServer4": "1.0.0-rc4-update1",
-    "Microsoft.AspNetCore.Identity": "1.0.0"
+    "Microsoft.AspNetCore.Identity": "1.1.0"
   },
 
   "frameworks": {
