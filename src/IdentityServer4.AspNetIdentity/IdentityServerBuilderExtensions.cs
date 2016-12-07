@@ -7,6 +7,7 @@ using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -32,12 +33,15 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.ClaimsIdentity.UserIdClaimType = JwtClaimTypes.Subject;
                 options.ClaimsIdentity.UserNameClaimType = JwtClaimTypes.Name;
                 options.ClaimsIdentity.RoleClaimType = JwtClaimTypes.Role;
+
+                if (options.OnSecurityStampRefreshingPrincipal == null)
+                {
+                    options.OnSecurityStampRefreshingPrincipal = SecurityStampValidatorCallback.UpdatePrincipal;
+                }
             });
 
             builder.AddResourceOwnerValidator<ResourceOwnerPasswordValidator<TUser>>();
             builder.AddProfileService<ProfileService<TUser>>();
-
-            builder.Services.AddTransient<ISecurityStampValidator, IdentityServer4.AspNetIdentity.SecurityStampValidator<TUser>>();
 
             return builder;
         }
