@@ -18,10 +18,12 @@ using IdentityServer4.Models;
 using IdentityModel;
 using IdentityServer4;
 using Microsoft.AspNetCore.Http.Authentication;
+using Host.Filters;
 
 namespace Host.Controllers
 {
     [Authorize]
+    [SecurityHeaders]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

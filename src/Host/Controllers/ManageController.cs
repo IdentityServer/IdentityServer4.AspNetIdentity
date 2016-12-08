@@ -9,10 +9,12 @@ using Microsoft.Extensions.Logging;
 using Host.Models;
 using Host.Models.ManageViewModels;
 using Host.Services;
+using Host.Filters;
 
 namespace Host.Controllers
 {
     [Authorize]
+    [SecurityHeaders]
     public class ManageController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

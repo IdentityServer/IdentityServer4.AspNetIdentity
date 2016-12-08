@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using IdentityServer4.Services;
 using IdentityServer4.Quickstart.UI.Models;
+using Host.Filters;
 
 namespace Host.Controllers
 {
+    [SecurityHeaders]
     public class HomeController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
