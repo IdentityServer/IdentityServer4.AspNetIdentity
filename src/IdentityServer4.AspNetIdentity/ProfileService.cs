@@ -6,7 +6,6 @@ using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace IdentityServer4.AspNetIdentity

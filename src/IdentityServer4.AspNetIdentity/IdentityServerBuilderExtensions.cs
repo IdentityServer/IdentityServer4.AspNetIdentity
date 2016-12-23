@@ -6,8 +6,6 @@ using IdentityModel;
 using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Configuration;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -24,7 +22,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             builder.Services.Configure<IdentityServerOptions>(options =>
             {
-                options.AuthenticationOptions.AuthenticationScheme = authenticationScheme;
+                options.Authentication.AuthenticationScheme = authenticationScheme;
             });
 
             builder.Services.Configure<IdentityOptions>(options =>

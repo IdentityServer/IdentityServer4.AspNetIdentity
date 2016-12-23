@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0-rc5-*",
+  "version": "1.0.0-*",
 
   "authors": [ "Brock Allen", "Dominick Baier" ],
   "description": "ASP.NET Core Identity Integration for IdentityServer4",
@@ -12,7 +12,7 @@
   },
 
   "dependencies": {
-    "IdentityServer4": "1.0.0-rc5",
+    "IdentityServer4": "1.0.0",
     "Microsoft.AspNetCore.Identity": "1.1.0"
   },
 

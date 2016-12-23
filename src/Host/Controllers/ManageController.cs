@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Host.Models;
 using Host.Models.ManageViewModels;
 using Host.Services;
-using Host.Filters;
+using IdentityServer4.Quickstart.UI;
 
 namespace Host.Controllers
 {

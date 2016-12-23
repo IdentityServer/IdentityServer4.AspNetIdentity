@@ -49,10 +49,16 @@ textarea {
   }
 }
 
-.validation-summary-valid {
+/*IS4 CSS*/
+.validation-summary-valid{
     display:none;
 }
 
+.logged-out iframe {
+  display: none;
+  width: 0;
+  height: 0;
+}
 .page-consent .client-logo {
   float: left;
 }
@@ -75,10 +81,4 @@ textarea {
 }
 .page-consent .consent-form .consent-remember {
   padding-left: 16px;
-}
-
-.logged-out iframe {
-  display: none;
-  width: 0;
-  height: 0;
 }
