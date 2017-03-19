@@ -63,7 +63,7 @@ namespace Host.Controllers
             if (vm.IsExternalLoginOnly)
             {
                 // only one option for logging in
-                return ExternalLogin(vm.ExternalProviders.First().AuthenticationScheme, returnUrl);
+                return ExternalLogin(vm.ExternalLoginScheme, returnUrl);
             }
 
             return View(vm);

@@ -59,7 +59,7 @@
             <h4>Use another service to log in.</h4>
             <hr />
             @{
-                var loginProviders = Model.ExternalProviders.ToArray();
+                var loginProviders = Model.VisibleExternalProviders.ToArray();
                 if (loginProviders.Length == 0)
                 {
                     <div>
