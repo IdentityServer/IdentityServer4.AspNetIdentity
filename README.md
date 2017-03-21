@@ -2,11 +2,7 @@
 
 ASP.NET Core Identity integration support for IdentityServer4.
 
-Add the following package to your project.json
-
-```json
-"IdentityServer4.AspNetIdentity": "1.0.0-rc1"
-```
+Add the following NuGet package to your application: `IdentityServer4.AspNetIdentity`
 
 This repos contains extensions for IdentityServer to easily integate with ASP.NET Core Identity. You simply add the `UseAspNetIdentity`method when configuring IdentityServer:
 
