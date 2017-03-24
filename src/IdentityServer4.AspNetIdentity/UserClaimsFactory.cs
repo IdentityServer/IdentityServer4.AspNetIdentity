@@ -1,8 +1,6 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -21,7 +19,7 @@ namespace IdentityServer4.AspNetIdentity
         {
         }
 
-        public async override Task<ClaimsPrincipal> CreateAsync(TUser user)
+        public override async Task<ClaimsPrincipal> CreateAsync(TUser user)
         {
             var principal = await base.CreateAsync(user);
             var identity = principal.Identities.First();
@@ -42,7 +40,7 @@ namespace IdentityServer4.AspNetIdentity
             if (UserManager.SupportsUserEmail)
             {
                 var email = await UserManager.GetEmailAsync(user);
-                if (!String.IsNullOrWhiteSpace(email))
+                if (!string.IsNullOrWhiteSpace(email))
                 {
                     identity.AddClaims(new[]
                     {
@@ -56,7 +54,7 @@ namespace IdentityServer4.AspNetIdentity
             if (UserManager.SupportsUserPhoneNumber)
             {
                 var phoneNumber = await UserManager.GetPhoneNumberAsync(user);
-                if (!String.IsNullOrWhiteSpace(phoneNumber))
+                if (!string.IsNullOrWhiteSpace(phoneNumber))
                 {
                     identity.AddClaims(new[]
                     {
@@ -65,6 +63,12 @@ namespace IdentityServer4.AspNetIdentity
                             await UserManager.IsPhoneNumberConfirmedAsync(user) ? "true" : "false", ClaimValueTypes.Boolean)
                     });
                 }
+            }
+
+            if (UserManager.SupportsUserRole)
+            {
+                var roles = await UserManager.GetRolesAsync(user);
+                identity.AddClaims(roles.Select(role => new Claim(JwtClaimTypes.Role, role)));
             }
 
             return principal;
