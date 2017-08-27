@@ -2,11 +2,14 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System.Collections.Generic;
+using System.Linq;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace IdentityServer4.AspNetIdentity
 {
@@ -28,7 +31,10 @@ namespace IdentityServer4.AspNetIdentity
             var sub = context.Subject.GetSubjectId();
             var user = await _userManager.FindByIdAsync(sub);
             var principal = await _claimsFactory.CreateAsync(user);
-            context.AddFilteredClaims(principal.Claims);
+
+            var requestedClaims = context.RequestedClaimTypes.ToList();
+            var claims = principal.Claims.ToList();
+            context.IssuedClaims = claims.FindAll(c => requestedClaims.Contains(c.Type));
         }
 
         public virtual async Task IsActiveAsync(IsActiveContext context)
