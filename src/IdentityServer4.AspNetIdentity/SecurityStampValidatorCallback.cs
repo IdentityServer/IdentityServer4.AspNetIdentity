@@ -12,8 +12,8 @@ namespace IdentityServer4.AspNetIdentity
     {
         public static Task UpdatePrincipal(SecurityStampRefreshingPrincipalContext context)
         {
-            var newClaimTypes = context.NewPrincipal.Claims.Select(x=>x.Type);
-            var currentClaimsToKeep = context.CurrentPrincipal.Claims.Where(x => !newClaimTypes.Contains(x.Type));
+            var newClaimTypes = context.NewPrincipal.Claims.Select(x=>x.Type).ToArray();
+            var currentClaimsToKeep = context.CurrentPrincipal.Claims.Where(x => !newClaimTypes.Contains(x.Type)).ToArray();
 
             var id = context.NewPrincipal.Identities.First();
             id.AddClaims(currentClaimsToKeep);

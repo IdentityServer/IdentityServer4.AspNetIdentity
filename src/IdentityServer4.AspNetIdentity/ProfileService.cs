@@ -28,7 +28,7 @@ namespace IdentityServer4.AspNetIdentity
             var sub = context.Subject.GetSubjectId();
             var user = await _userManager.FindByIdAsync(sub);
             var principal = await _claimsFactory.CreateAsync(user);
-            context.AddFilteredClaims(principal.Claims);
+            context.AddRequestedClaims(principal.Claims);
         }
 
         public virtual async Task IsActiveAsync(IsActiveContext context)

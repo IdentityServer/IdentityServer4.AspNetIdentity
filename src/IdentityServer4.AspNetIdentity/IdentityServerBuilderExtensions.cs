@@ -2,10 +2,13 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.AspNetIdentity;
 using IdentityServer4.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -14,28 +17,28 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IIdentityServerBuilder AddAspNetIdentity<TUser>(this IIdentityServerBuilder builder)
             where TUser : class
         {
-            return builder.AddAspNetIdentity<TUser>("Identity.Application");
-        }
-
-        public static IIdentityServerBuilder AddAspNetIdentity<TUser>(this IIdentityServerBuilder builder, string authenticationScheme)
-            where TUser : class
-        {
-            builder.Services.Configure<IdentityServerOptions>(options =>
-            {
-                options.Authentication.AuthenticationScheme = authenticationScheme;
-            });
-
             builder.Services.Configure<IdentityOptions>(options =>
             {
-                options.Cookies.ApplicationCookie.AuthenticationScheme = authenticationScheme;
                 options.ClaimsIdentity.UserIdClaimType = JwtClaimTypes.Subject;
                 options.ClaimsIdentity.UserNameClaimType = JwtClaimTypes.Name;
                 options.ClaimsIdentity.RoleClaimType = JwtClaimTypes.Role;
+            });
 
-                if (options.OnSecurityStampRefreshingPrincipal == null)
-                {
-                    options.OnSecurityStampRefreshingPrincipal = SecurityStampValidatorCallback.UpdatePrincipal;
-                }
+            builder.Services.Configure<SecurityStampValidatorOptions>(opts =>
+            {
+                opts.OnRefreshingPrincipal = SecurityStampValidatorCallback.UpdatePrincipal;
+            });
+
+            builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme, cookie =>
+            {
+                // we need to disable to allow iframe for authorize requests
+                cookie.Cookie.SameSite = AspNetCore.Http.SameSiteMode.None;
+            });
+
+            // todo: consider putting this code in to simply block cookie renewal
+            builder.Services.PostConfigure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme, cookie =>
+            {
+                // cookie.Events.OnValidatePrincipal = ctx => Task.CompletedTask;
             });
 
             builder.AddResourceOwnerValidator<ResourceOwnerPasswordValidator<TUser>>();
