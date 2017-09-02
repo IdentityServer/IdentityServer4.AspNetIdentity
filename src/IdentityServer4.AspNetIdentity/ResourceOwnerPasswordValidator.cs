@@ -33,7 +33,6 @@ namespace IdentityServer4.AspNetIdentity
             _logger = logger;
         }
 
-        // todo: update these failure events to pass interactive:false
         public virtual async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
             var user = await _userManager.FindByNameAsync(context.UserName);
@@ -45,7 +44,7 @@ namespace IdentityServer4.AspNetIdentity
                     var sub = await _userManager.GetUserIdAsync(user);
 
                     _logger.LogInformation("Credentials validated for username: {username}", context.UserName);
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(context.UserName, sub, context.UserName, false));
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(context.UserName, sub, context.UserName, interactive: false));
 
                     context.Result = new GrantValidationResult(sub, AuthenticationMethods.Password);
                     return;
@@ -53,23 +52,23 @@ namespace IdentityServer4.AspNetIdentity
                 else if (result.IsLockedOut)
                 {
                     _logger.LogInformation("Authentication failed for username: {username}, reason: locked out", context.UserName);
-                    await _events.RaiseAsync(new UserLoginFailureEvent(context.UserName, "locked out"));
+                    await _events.RaiseAsync(new UserLoginFailureEvent(context.UserName, "locked out", interactive: false));
                 }
                 else if (result.IsNotAllowed)
                 {
                     _logger.LogInformation("Authentication failed for username: {username}, reason: not allowed", context.UserName);
-                    await _events.RaiseAsync(new UserLoginFailureEvent(context.UserName, "not allowed"));
+                    await _events.RaiseAsync(new UserLoginFailureEvent(context.UserName, "not allowed", interactive: false));
                 }
                 else
                 {
                     _logger.LogInformation("Authentication failed for username: {username}, reason: invalid credentials", context.UserName);
-                    await _events.RaiseAsync(new UserLoginFailureEvent(context.UserName, "invalid credentials"));
+                    await _events.RaiseAsync(new UserLoginFailureEvent(context.UserName, "invalid credentials", interactive: false));
                 }
             }
             else
             {
                 _logger.LogInformation("No user found matching username: {username}", context.UserName);
-                await _events.RaiseAsync(new UserLoginFailureEvent(context.UserName, "invalid username"));
+                await _events.RaiseAsync(new UserLoginFailureEvent(context.UserName, "invalid username", interactive: false));
             }
 
             context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant);
