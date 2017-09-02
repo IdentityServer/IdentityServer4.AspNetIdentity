@@ -29,7 +29,7 @@ namespace Host.Configuration
             return new[]
             {
                 // simple version with ctor
-                new ApiResource("api1")
+                new ApiResource("api1", "Some API 1")
                 {
                     // this is needed for introspection when using reference tokens
                     ApiSecrets = { new Secret("secret".Sha256()) }
@@ -56,7 +56,7 @@ namespace Host.Configuration
                         new Scope()
                         {
                             Name = "api2.full_access",
-                            DisplayName = "Full access to API 2",
+                            DisplayName = "Full access to API 2"
                         },
                         new Scope
                         {
