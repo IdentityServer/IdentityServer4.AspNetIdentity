@@ -2,7 +2,12 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
+using System.Linq;
+using IdentityModel;
 using IdentityServer4.AspNetIdentity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -11,10 +16,75 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IIdentityServerBuilder AddAspNetIdentity<TUser>(this IIdentityServerBuilder builder)
             where TUser : class
         {
+            builder.Services.AddTransientDecorator<IUserClaimsPrincipalFactory<TUser>, UserClaimsFactory<TUser>>();
+
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.ClaimsIdentity.UserIdClaimType = JwtClaimTypes.Subject;
+                options.ClaimsIdentity.UserNameClaimType = JwtClaimTypes.Name;
+                options.ClaimsIdentity.RoleClaimType = JwtClaimTypes.Role;
+            });
+
+            builder.Services.Configure<SecurityStampValidatorOptions>(opts =>
+            {
+                opts.OnRefreshingPrincipal = SecurityStampValidatorCallback.UpdatePrincipal;
+            });
+
+            builder.Services.Configure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme, cookie =>
+            {
+                // we need to disable to allow iframe for authorize requests
+                cookie.Cookie.SameSite = AspNetCore.Http.SameSiteMode.None;
+            });
+
             builder.AddResourceOwnerValidator<ResourceOwnerPasswordValidator<TUser>>();
             builder.AddProfileService<ProfileService<TUser>>();
 
             return builder;
+        }
+
+        internal static void AddTransientDecorator<TService, TImplementation>(this IServiceCollection services)
+            where TService : class
+            where TImplementation : class, TService
+        {
+            services.AddDecorator<TService>();
+            services.AddTransient<TService, TImplementation>();
+        }
+
+        internal static void AddDecorator<TService>(this IServiceCollection services)
+        {
+            var registration = services.FirstOrDefault(x => x.ServiceType == typeof(TService));
+            if (registration == null)
+            {
+                throw new InvalidOperationException("Service type: " + typeof(TService).Name + " not registered.");
+            }
+            if (services.Any(x => x.ServiceType == typeof(Decorator<TService>)))
+            {
+                throw new InvalidOperationException("Decorator already registered for type: " + typeof(TService).Name + ".");
+            }
+
+            services.Remove(registration);
+
+            if (registration.ImplementationInstance != null)
+            {
+                var type = registration.ImplementationInstance.GetType();
+                var innerType = typeof(Decorator<,>).MakeGenericType(typeof(TService), type);
+                services.Add(new ServiceDescriptor(typeof(Decorator<TService>), innerType, ServiceLifetime.Transient));
+                services.Add(new ServiceDescriptor(type, registration.ImplementationInstance));
+            }
+            else if (registration.ImplementationFactory != null)
+            {
+                services.Add(new ServiceDescriptor(typeof(Decorator<TService>), provider =>
+                {
+                    return new DisposableDecorator<TService>((TService)registration.ImplementationFactory(provider));
+                }, registration.Lifetime));
+            }
+            else
+            {
+                var type = registration.ImplementationType;
+                var innerType = typeof(Decorator<,>).MakeGenericType(typeof(TService), registration.ImplementationType);
+                services.Add(new ServiceDescriptor(typeof(Decorator<TService>), innerType, ServiceLifetime.Transient));
+                services.Add(new ServiceDescriptor(type, type, registration.Lifetime));
+            }
         }
     }
 }

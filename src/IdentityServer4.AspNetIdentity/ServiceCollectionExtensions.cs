@@ -9,11 +9,11 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class IdentityServerAspNetIdentityServiceCollectionExtensions
     {
-        public static IServiceCollection AddIdentityServerUserClaimsPrincipalFactory<TUser, TRole>(this IServiceCollection services)
+        public static IServiceCollection AddIdentityServerUserClaimsPrincipalFactory<TUser>(this IServiceCollection services)
             where TUser : class
-            where TRole : class
         {
-            return services.AddTransient<IUserClaimsPrincipalFactory<TUser>, UserClaimsFactory<TUser, TRole>>();
+            services.AddTransientDecorator<IUserClaimsPrincipalFactory<TUser>, UserClaimsFactory<TUser>>();
+            return services;
         }
     }
 }

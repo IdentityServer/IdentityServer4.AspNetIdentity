@@ -5,29 +5,37 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using IdentityModel;
 
 namespace IdentityServer4.AspNetIdentity
 {
-    public class UserClaimsFactory<TUser, TRole> : UserClaimsPrincipalFactory<TUser, TRole>
+    internal class UserClaimsFactory<TUser> : IUserClaimsPrincipalFactory<TUser>
         where TUser : class
-        where TRole : class
     {
-        public UserClaimsFactory(UserManager<TUser> userManager, RoleManager<TRole> roleManager, IOptions<IdentityOptions> optionsAccessor) : base(userManager, roleManager, optionsAccessor)
+        private readonly Decorator<IUserClaimsPrincipalFactory<TUser>> _inner;
+        private UserManager<TUser> _userManager;
+
+        public UserClaimsFactory(Decorator<IUserClaimsPrincipalFactory<TUser>> inner, UserManager<TUser> userManager)
         {
+            _inner = inner;
+            _userManager = userManager;
         }
 
-        public async override Task<ClaimsPrincipal> CreateAsync(TUser user)
+        public async Task<ClaimsPrincipal> CreateAsync(TUser user)
         {
-            var principal = await base.CreateAsync(user);
+            var principal = await _inner.Instance.CreateAsync(user);
             var identity = principal.Identities.First();
 
-            var username = await UserManager.GetUserNameAsync(user);
-            var usernameClaim = identity.FindFirst(claim => claim.Type == Options.ClaimsIdentity.UserNameClaimType && claim.Value == username);
+            if (!identity.HasClaim(x => x.Type == JwtClaimTypes.Subject))
+            {
+                var sub = await _userManager.GetUserIdAsync(user);
+                identity.AddClaim(new Claim(JwtClaimTypes.Subject, sub));
+            }
+
+            var username = await _userManager.GetUserNameAsync(user);
+            var usernameClaim = identity.FindFirst(claim => claim.Type == _userManager.Options.ClaimsIdentity.UserNameClaimType && claim.Value == username);
             if (usernameClaim != null)
             {
                 identity.RemoveClaim(usernameClaim);
@@ -39,30 +47,30 @@ namespace IdentityServer4.AspNetIdentity
                 identity.AddClaim(new Claim(JwtClaimTypes.Name, username));
             }
 
-            if (UserManager.SupportsUserEmail)
+            if (_userManager.SupportsUserEmail)
             {
-                var email = await UserManager.GetEmailAsync(user);
+                var email = await _userManager.GetEmailAsync(user);
                 if (!String.IsNullOrWhiteSpace(email))
                 {
                     identity.AddClaims(new[]
                     {
                         new Claim(JwtClaimTypes.Email, email),
                         new Claim(JwtClaimTypes.EmailVerified,
-                            await UserManager.IsEmailConfirmedAsync(user) ? "true" : "false", ClaimValueTypes.Boolean)
+                            await _userManager.IsEmailConfirmedAsync(user) ? "true" : "false", ClaimValueTypes.Boolean)
                     });
                 }
             }
 
-            if (UserManager.SupportsUserPhoneNumber)
+            if (_userManager.SupportsUserPhoneNumber)
             {
-                var phoneNumber = await UserManager.GetPhoneNumberAsync(user);
+                var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
                 if (!String.IsNullOrWhiteSpace(phoneNumber))
                 {
                     identity.AddClaims(new[]
                     {
                         new Claim(JwtClaimTypes.PhoneNumber, phoneNumber),
                         new Claim(JwtClaimTypes.PhoneNumberVerified,
-                            await UserManager.IsPhoneNumberConfirmedAsync(user) ? "true" : "false", ClaimValueTypes.Boolean)
+                            await _userManager.IsPhoneNumberConfirmedAsync(user) ? "true" : "false", ClaimValueTypes.Boolean)
                     });
                 }
             }
