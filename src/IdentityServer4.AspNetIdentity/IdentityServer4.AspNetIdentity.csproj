@@ -11,7 +11,7 @@
     <PackageProjectUrl>https://github.com/IdentityServer/IdentityServer4.AspNetIdentity</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/IdentityServer/IdentityServer4.AspNetIdentity/blob/release/LICENSE</PackageLicenseUrl>
     <VersionPrefix>2.0.0</VersionPrefix>
-    <!--<VersionSuffix>rc1</VersionSuffix>-->
+    <!--<VersionSuffix>rc1-update2</VersionSuffix>-->
   </PropertyGroup>
 
   <ItemGroup>
