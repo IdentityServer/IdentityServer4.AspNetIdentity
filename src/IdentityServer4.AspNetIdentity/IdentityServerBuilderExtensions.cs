@@ -52,7 +52,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         internal static void AddDecorator<TService>(this IServiceCollection services)
         {
-            var registration = services.FirstOrDefault(x => x.ServiceType == typeof(TService));
+            var registration = services.LastOrDefault(x => x.ServiceType == typeof(TService));
             if (registration == null)
             {
                 throw new InvalidOperationException("Service type: " + typeof(TService).Name + " not registered.");
