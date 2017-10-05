@@ -13,6 +13,11 @@ using IdentityServer4.Events;
 
 namespace IdentityServer4.AspNetIdentity
 {
+    /// <summary>
+    /// IResourceOwnerPasswordValidator that integrates with ASP.NET Identity.
+    /// </summary>
+    /// <typeparam name="TUser">The type of the user.</typeparam>
+    /// <seealso cref="IdentityServer4.Validation.IResourceOwnerPasswordValidator" />
     public class ResourceOwnerPasswordValidator<TUser> : IResourceOwnerPasswordValidator
         where TUser : class
     {
@@ -21,6 +26,13 @@ namespace IdentityServer4.AspNetIdentity
         private readonly UserManager<TUser> _userManager;
         private readonly ILogger<ResourceOwnerPasswordValidator<TUser>> _logger;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResourceOwnerPasswordValidator{TUser}"/> class.
+        /// </summary>
+        /// <param name="userManager">The user manager.</param>
+        /// <param name="signInManager">The sign in manager.</param>
+        /// <param name="events">The events.</param>
+        /// <param name="logger">The logger.</param>
         public ResourceOwnerPasswordValidator(
             UserManager<TUser> userManager,
             SignInManager<TUser> signInManager,
@@ -33,6 +45,11 @@ namespace IdentityServer4.AspNetIdentity
             _logger = logger;
         }
 
+        /// <summary>
+        /// Validates the resource owner password credential
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public virtual async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
             var user = await _userManager.FindByNameAsync(context.UserName);

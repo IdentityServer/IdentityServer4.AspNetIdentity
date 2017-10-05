@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class IdentityServerAspNetIdentityServiceCollectionExtensions
-    {
-        public static IServiceCollection AddIdentityServerUserClaimsPrincipalFactory<TUser>(this IServiceCollection services)
-            where TUser : class
-        {
-            services.AddTransientDecorator<IUserClaimsPrincipalFactory<TUser>, UserClaimsFactory<TUser>>();
-            return services;
-        }
-    }
+    //public static class IdentityServerAspNetIdentityServiceCollectionExtensions
+    //{
+    //    public static IServiceCollection AddIdentityServerUserClaimsPrincipalFactory<TUser>(this IServiceCollection services)
+    //        where TUser : class
+    //    {
+    //        services.AddTransientDecorator<IUserClaimsPrincipalFactory<TUser>, UserClaimsFactory<TUser>>();
+    //        return services;
+    //    }
+    //}
 }
