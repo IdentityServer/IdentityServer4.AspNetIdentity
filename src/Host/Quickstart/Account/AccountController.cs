@@ -112,6 +112,12 @@ namespace IdentityServer4.Quickstart.UI
                     return Redirect("~/");
                 }
 
+                // This will only be true if the user has selected two factor authN for this account
+                if (result.RequiresTwoFactor)
+                {
+                    return RedirectToAction(nameof(LoginWith2fa), new { model.ReturnUrl, model.RememberLogin });
+                }
+                
                 await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
 
                 ModelState.AddModelError("", AccountOptions.InvalidCredentialsErrorMessage);
@@ -121,6 +127,98 @@ namespace IdentityServer4.Quickstart.UI
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> LoginWith2fa(bool RememberLogin, string returnUrl = null)
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load two-factor authentication user.");
+            }
+
+            var model = new LoginWith2faViewModel { RememberMe = RememberLogin };
+            ViewData["ReturnUrl"] = returnUrl;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoginWith2fa(LoginWith2faViewModel model, bool RememberLogin, string ReturnUrl = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            var authenticatorCode = model.TwoFactorCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var result = await _signInManager.TwoFactorAuthenticatorSignInAsync(authenticatorCode, RememberLogin, model.RememberMachine);
+
+            if (result.Succeeded)
+            {
+                return RedirectToLocal(ReturnUrl);
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid authenticator code.");
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LoginWithRecoveryCode(string returnUrl = null)
+        {
+            // Ensure the user has gone through the username & password screen first
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load two-factor authentication user.");
+            }
+
+            ViewData["ReturnUrl"] = returnUrl;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LoginWithRecoveryCode(LoginWithRecoveryCodeViewModel model, string returnUrl = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            if (user == null)
+            {
+                throw new ApplicationException($"Unable to load two-factor authentication user.");
+            }
+
+            var recoveryCode = model.RecoveryCode.Replace(" ", string.Empty);
+
+            var result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(recoveryCode);
+
+            if (result.Succeeded)
+            {
+                return RedirectToLocal(returnUrl);
+            }
+
+                ModelState.AddModelError(string.Empty, "Invalid recovery code entered.");
+                return View();
+            
+        }
+
 
         /// <summary>
         /// initiate roundtrip to external authentication provider
@@ -536,6 +634,18 @@ namespace IdentityServer4.Quickstart.UI
 
         private void ProcessLoginCallbackForSaml2p(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
         {
+        }
+
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(nameof(HomeController.Index), "Home");
+            }
         }
     }
 }
