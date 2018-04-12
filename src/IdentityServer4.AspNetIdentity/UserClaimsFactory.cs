@@ -11,7 +11,7 @@ using IdentityModel;
 
 namespace IdentityServer4.AspNetIdentity
 {
-    internal class UserClaimsFactory<TUser> : IUserClaimsPrincipalFactory<TUser>
+    public class UserClaimsFactory<TUser> : IUserClaimsPrincipalFactory<TUser>
         where TUser : class
     {
         private readonly Decorator<IUserClaimsPrincipalFactory<TUser>> _inner;
