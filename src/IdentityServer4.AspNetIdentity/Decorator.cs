@@ -6,7 +6,7 @@ using System;
 
 namespace IdentityServer4.AspNetIdentity
 {
-    internal class Decorator<TService>
+    public class Decorator<TService>
     {
         public TService Instance { get; set; }
 
