@@ -20,9 +20,20 @@ namespace IdentityServer4.AspNetIdentity
     public class ProfileService<TUser> : IProfileService
         where TUser : class
     {
-        private readonly IUserClaimsPrincipalFactory<TUser> _claimsFactory;
-        private readonly ILogger<ProfileService<TUser>> _logger;
-        private readonly UserManager<TUser> _userManager;
+        /// <summary>
+        /// The claims factory.
+        /// </summary>
+        protected readonly IUserClaimsPrincipalFactory<TUser> ClaimsFactory;
+        
+        /// <summary>
+        /// The logger
+        /// </summary>
+        protected readonly ILogger<ProfileService<TUser>> Logger;
+
+        /// <summary>
+        /// The user manager.
+        /// </summary>
+        protected readonly UserManager<TUser> UserManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProfileService{TUser}"/> class.
@@ -32,8 +43,8 @@ namespace IdentityServer4.AspNetIdentity
         public ProfileService(UserManager<TUser> userManager,
             IUserClaimsPrincipalFactory<TUser> claimsFactory)
         {
-            _userManager = userManager;
-            _claimsFactory = claimsFactory;
+            UserManager = userManager;
+            ClaimsFactory = claimsFactory;
         }
 
         /// <summary>
@@ -46,9 +57,9 @@ namespace IdentityServer4.AspNetIdentity
             IUserClaimsPrincipalFactory<TUser> claimsFactory,
             ILogger<ProfileService<TUser>> logger)
         {
-            _userManager = userManager;
-            _claimsFactory = claimsFactory;
-            _logger = logger;
+            UserManager = userManager;
+            ClaimsFactory = claimsFactory;
+            Logger = logger;
         }
 
         /// <summary>
@@ -61,14 +72,14 @@ namespace IdentityServer4.AspNetIdentity
             var sub = context.Subject?.GetSubjectId();
             if (sub == null) throw new Exception("No sub claim present");
 
-            var user = await _userManager.FindByIdAsync(sub);
+            var user = await UserManager.FindByIdAsync(sub);
             if (user == null)
             {
-                _logger?.LogWarning("No user found matching subject Id: {0}", sub);
+                Logger?.LogWarning("No user found matching subject Id: {0}", sub);
             }
             else
             {
-                var principal = await _claimsFactory.CreateAsync(user);
+                var principal = await ClaimsFactory.CreateAsync(user);
                 if (principal == null) throw new Exception("ClaimsFactory failed to create a principal");
 
                 context.AddRequestedClaims(principal.Claims);
@@ -86,10 +97,10 @@ namespace IdentityServer4.AspNetIdentity
             var sub = context.Subject?.GetSubjectId();
             if (sub == null) throw new Exception("No subject Id claim present");
 
-            var user = await _userManager.FindByIdAsync(sub);
+            var user = await UserManager.FindByIdAsync(sub);
             if (user == null)
             {
-                _logger?.LogWarning("No user found matching subject Id: {0}", sub);
+                Logger?.LogWarning("No user found matching subject Id: {0}", sub);
             }
 
             context.IsActive = user != null;
