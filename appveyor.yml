@@ -1,12 +1,23 @@
 version: 1.0.{build}
+
+image:
+- Visual Studio 2017
+
+environment:
+  APPVEYOR_YML_DISABLE_PS_LINUX: true
+
 branches:
   only:
   - dev
+  
 build_script:
 - ps: .\build.ps1
+- sh: ./build.sh
+
 test: off
 artifacts:
 - path: artifacts/packages/*.nupkg
+
 deploy:
 - provider: NuGet
   server: https://www.myget.org/F/identity/
@@ -15,12 +26,3 @@ deploy:
   skip_symbols: true
   on:
     branch: dev
-
-image: Visual Studio 2017
-
-#---------------------------------#
-#  Skip builds for doc changes    #
-#---------------------------------#
-skip_commits:
-  # Regex for matching commit message
-  message: /docs.*/
