@@ -19,7 +19,6 @@ namespace Host
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -29,7 +28,8 @@ namespace Host
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.AddMvc()
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_1);
 
             services.AddIdentityServer()
                 .AddDeveloperSigningCredential()
@@ -44,12 +44,6 @@ namespace Host
                     options.ClientId = "998042782978-s07498t8i8jas7npj4crve1skpromf37.apps.googleusercontent.com";
                     options.ClientSecret = "HsnwJri_53zn7VcO1Fm7THBb";
                 });
-
-            // for testing security stamp claims generation
-            //services.Configure<SecurityStampValidatorOptions>(options =>
-            //{
-            //    options.ValidationInterval = TimeSpan.FromSeconds(30);
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
