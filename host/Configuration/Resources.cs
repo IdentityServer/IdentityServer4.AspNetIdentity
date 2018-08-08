@@ -53,7 +53,7 @@ namespace Host.Configuration
 
                     Scopes =
                     {
-                        new Scope()
+                        new Scope
                         {
                             Name = "api2.full_access",
                             DisplayName = "Full access to API 2"
@@ -62,6 +62,15 @@ namespace Host.Configuration
                         {
                             Name = "api2.read_only",
                             DisplayName = "Read only access to API 2"
+                        },
+                        new Scope
+                        {
+                            Name = "api2.internal",
+                            ShowInDiscoveryDocument = false,
+                            UserClaims =
+                            {
+                                "internal_id"
+                            }
                         }
                     }
                 }
