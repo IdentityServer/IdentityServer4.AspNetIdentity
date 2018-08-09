@@ -5,7 +5,9 @@
 using System;
 using System.Linq;
 using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.AspNetIdentity;
+using IdentityServer4.Configuration;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 
@@ -46,6 +48,15 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 // we need to disable to allow iframe for authorize requests
                 cookie.Cookie.SameSite = AspNetCore.Http.SameSiteMode.None;
+            });
+
+            builder.Services.AddAuthentication(options =>
+            {
+                if (options.DefaultAuthenticateScheme == null &&
+                    options.DefaultScheme == IdentityServerConstants.DefaultCookieAuthenticationScheme)
+                {
+                    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+                }
             });
 
             builder.AddResourceOwnerValidator<ResourceOwnerPasswordValidator<TUser>>();
