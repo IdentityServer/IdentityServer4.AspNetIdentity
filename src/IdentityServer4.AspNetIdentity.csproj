@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <VersionPrefix>2.3.0</VersionPrefix>
-    <VersionSuffix>preview1</VersionSuffix>
+    <VersionSuffix>preview1-update1</VersionSuffix>
 
     <Description>ASP.NET Core Identity Integration for IdentityServer4</Description>
     <Authors>Brock Allen;Dominick Baier</Authors>
