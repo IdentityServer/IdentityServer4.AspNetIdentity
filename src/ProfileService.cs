@@ -101,9 +101,20 @@ namespace IdentityServer4.AspNetIdentity
             if (user == null)
             {
                 Logger?.LogWarning("No user found matching subject Id: {0}", sub);
+                context.IsActive = false;
             }
-
-            context.IsActive = user != null;
+            else
+            {
+                if (UserManager.SupportsUserLockout)
+                {
+                    context.IsActive = await UserManager.IsLockedOutAsync(user) == false;
+                }
+                else
+                {
+                    context.IsActive = true;
+                }
+                
+            }
         }
     }
 }
