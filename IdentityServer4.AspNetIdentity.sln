@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migrations", "migrations", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlServer", "migrations\SqlServer\SqlServer.csproj", "{DD44B9E9-C32E-4F89-92C9-25444A709BBB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{F0EA64D9-5A5B-4095-9995-E7A2E4E61358}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer4.AspNetIdentity.UnitTests", "test\IdentityServer4.AspNetIdentity.UnitTests\IdentityServer4.AspNetIdentity.UnitTests.csproj", "{C2874FF9-06FF-4492-968A-576D8B301D35}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +35,10 @@ Global
 		{DD44B9E9-C32E-4F89-92C9-25444A709BBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD44B9E9-C32E-4F89-92C9-25444A709BBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD44B9E9-C32E-4F89-92C9-25444A709BBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2874FF9-06FF-4492-968A-576D8B301D35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2874FF9-06FF-4492-968A-576D8B301D35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2874FF9-06FF-4492-968A-576D8B301D35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2874FF9-06FF-4492-968A-576D8B301D35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +47,7 @@ Global
 		{A2CDBE15-5898-4A04-94DC-133EE03A78B3} = {932FA9D0-7FB4-4047-8FFD-B74907B5FA15}
 		{B7FBA07C-A462-4869-AF94-5E36DFC3742D} = {932FA9D0-7FB4-4047-8FFD-B74907B5FA15}
 		{DD44B9E9-C32E-4F89-92C9-25444A709BBB} = {4BC142B6-4922-4203-82A2-F28CB6AC5004}
+		{C2874FF9-06FF-4492-968A-576D8B301D35} = {F0EA64D9-5A5B-4095-9995-E7A2E4E61358}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {03AF716A-120B-409D-B384-B65E7FDEFEEF}
