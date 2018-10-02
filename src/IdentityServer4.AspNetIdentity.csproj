@@ -1,14 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <VersionPrefix>2.3.0</VersionPrefix>
-    <VersionSuffix>preview1-update2</VersionSuffix>
-
+    <PackageId>IdentityServer4.AspNetIdentity</PackageId>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    
     <Description>ASP.NET Core Identity Integration for IdentityServer4</Description>
     <Authors>Brock Allen;Dominick Baier</Authors>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>IdentityServer4.AspNetIdentity</AssemblyName>
-    <PackageId>IdentityServer4.AspNetIdentity</PackageId>
     <PackageTags>OAuth2;OAuth 2.0;OpenID Connect;Security;Identity;IdentityServer;ASP.NET Identity</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/IdentityServer/Artwork/master/Logos/IDserver_icon128.jpg</PackageIconUrl>
     <PackageProjectUrl>https://github.com/IdentityServer/IdentityServer4.AspNetIdentity</PackageProjectUrl>
@@ -25,16 +23,8 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.0\IdentityServer4.AspNetIdentity.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard2.0\IdentityServer4.AspNetIdentity.xml</DocumentationFile>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="IdentityServer4" Version="2.3.0-preview1-update2" />
+    <PackageReference Include="IdentityServer4" Version="2.3.0-dev0151" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.0" />
   </ItemGroup>
 
