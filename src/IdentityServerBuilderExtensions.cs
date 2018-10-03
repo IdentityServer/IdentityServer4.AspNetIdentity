@@ -44,10 +44,16 @@ namespace Microsoft.Extensions.DependencyInjection
                 opts.OnRefreshingPrincipal = SecurityStampValidatorCallback.UpdatePrincipal;
             });
 
-            builder.Services.Configure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme, cookie =>
+            builder.Services.ConfigureApplicationCookie(options =>
             {
                 // we need to disable to allow iframe for authorize requests
-                cookie.Cookie.SameSite = AspNetCore.Http.SameSiteMode.None;
+                options.Cookie.SameSite = AspNetCore.Http.SameSiteMode.None;
+            });
+
+            builder.Services.ConfigureExternalCookie(options =>
+            {
+                // https://github.com/IdentityServer/IdentityServer4/issues/2595
+                options.Cookie.SameSite = AspNetCore.Http.SameSiteMode.None;
             });
 
             builder.Services.AddAuthentication(options =>
