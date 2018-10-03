@@ -46,14 +46,26 @@ namespace Microsoft.Extensions.DependencyInjection
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
+                options.Cookie.IsEssential = true;
                 // we need to disable to allow iframe for authorize requests
                 options.Cookie.SameSite = AspNetCore.Http.SameSiteMode.None;
             });
 
             builder.Services.ConfigureExternalCookie(options =>
             {
+                options.Cookie.IsEssential = true;
                 // https://github.com/IdentityServer/IdentityServer4/issues/2595
                 options.Cookie.SameSite = AspNetCore.Http.SameSiteMode.None;
+            });
+
+            builder.Services.Configure<CookieAuthenticationOptions>(IdentityConstants.TwoFactorRememberMeScheme, options =>
+            {
+                options.Cookie.IsEssential = true;
+            });
+
+            builder.Services.Configure<CookieAuthenticationOptions>(IdentityConstants.TwoFactorUserIdScheme, options =>
+            {
+                options.Cookie.IsEssential = true;
             });
 
             builder.Services.AddAuthentication(options =>
