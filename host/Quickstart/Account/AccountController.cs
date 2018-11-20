@@ -141,7 +141,7 @@ namespace IdentityServer4.Quickstart.UI
                 }
 
                 await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
-                ModelState.AddModelError("", AccountOptions.InvalidCredentialsErrorMessage);
+                ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
             }
 
             // something went wrong, show form with error
@@ -149,6 +149,7 @@ namespace IdentityServer4.Quickstart.UI
             return View(vm);
         }
 
+        
         /// <summary>
         /// Show logout page
         /// </summary>
