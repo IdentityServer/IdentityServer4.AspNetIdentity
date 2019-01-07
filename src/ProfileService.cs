@@ -5,6 +5,7 @@
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
+using IdentityServer4.Storage.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System;
@@ -101,6 +102,12 @@ namespace IdentityServer4.AspNetIdentity
             if (user == null)
             {
                 Logger?.LogWarning("No user found matching subject Id: {0}", sub);
+            }
+
+            if (user is IPassiveable passiveable)
+            {
+                context.IsActive = passiveable.Active;
+                return;
             }
 
             context.IsActive = user != null;
